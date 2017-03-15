@@ -1,3 +1,27 @@
+3/15/17
+Thinking more about the cleanup of the data. For some of the forum counts, ther are only relatvely small nunbers of
+records for the count at all, and there is a long tail as the counts go up. The long tail starts with the number of
+posts, which begins to tail out at 56 posts. The number of comments begins to tail at 54, but the number of
+endorsements begins to tail at 1. The current strategy is to simply make all of the tailed values the same as the
+lowest value in the tail, but we could try other things (the mean or median come to mind).
+
+For level of education, we will conflate "learn", "Learn", and "null" to a value of unreported (''). We should check
+to see if 'learn' should be retained; it is not a value that is documented but may have been added for a special purpose.
+
+
+
+3/13/17
+Finishing up the code that will extract a .csv file from the large person/course dataset file that will contain only the
+fields that are quasi-identifiers. Along with extracting the quasi-identifiers, the values for some of the self-reported
+quasi-identifiers is checked, and those that seem to be unlikely to be accurate (like ages under 12 or over 85).
+
+For number of forum posts, if there were more than 57 posts, we will group the students together, since this is a long
+tail that in total contains 3,106 students.
+
+for the number of forum comments, if there were more than 54 comments, we will set the number of comments to 55, as
+there were a total of 2780 students who were in this category.
+
+
 1/15/16
 
 Added code to numeric_generalization that will allow passing in the bin sizes as arguments. If no numbers are passed in,
