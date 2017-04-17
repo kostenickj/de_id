@@ -93,7 +93,7 @@ def clean_YoB(in_year):
     :param in_year: the year of birth reported
     :return: either the reported year, or the empty string
     '''
-    if (in_year < 1934) or (in_year > 2005):
+    if (in_year < '1934') or (in_year > '2005'):
         in_year = ''
     return in_year
 
@@ -202,7 +202,7 @@ def create_from_full_csv(cline):
                     cline[13], cline[15], cline[12],
                     cline[22], cline[23], cline[24],
                     cline[34], cline[35], cline[36], cline[37], cline[38], cline[39],
-                    cline[51], cline[52])
+                    cline[51], cline[53])
     return new_qi
 
 

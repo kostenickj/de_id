@@ -1,3 +1,22 @@
+4/9/17
+Starting to understand the DataFrame...it is a 2-d array, that can be initialized by a list of lists. These can be
+built from the .csv file for all of the various numerics that need to be generalized-- this couild be done in a single
+pass to make it most efficient, where each list is a value (YoB, or number of posts), followed by a count of the number
+of records with that value, followed by the accumulated total (which will be the count X the number).
+
+The question comes up what to do with the marked value (that is, the value that indicates that there is no value given).
+This could be handled either as a special case in the bin building code, or be removed before and held separate. I sort
+of like the second of these, as it makes the bin building code cleaner, but need to find a nice way to handle that first.
+Current theory is that the marked value will be removed from the list of values/counts prior to sending to the bin
+builder, then added to the dictionary that the bin builder returns, so that it can be written out.
+
+4/7/17
+Looking at what Olivia did in numeric_generalization_v2.py.
+
+The basic datastructure she works with is a pandas DataFrame, which she constructs from a list obtained from performing
+a query on the database. The query returns, for year of birth, a list ordered by yob with the yob, the count of records
+with that yob, and the sum of the yob.
+years.
 3/15/17
 Thinking more about the cleanup of the data. For some of the forum counts, ther are only relatvely small nunbers of
 records for the count at all, and there is a long tail as the counts go up. The long tail starts with the number of

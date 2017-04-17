@@ -19,7 +19,7 @@ sqlite3
 1) A .csv (comma-delimited text file) version of the Person-Course
 dataset. 
 
-+Person-course is a secondary dataset that is generated
++ Person-course is a secondary dataset that is generated
 based upon registration data and activity data, so is a merge of
 the edX tracking logs and student-level demographics. The original
 incarnation included such values as the number of courseware 
@@ -32,7 +32,7 @@ based upon informed choices.
 
 2) A determination of which columns are quasi-identifiers. 
 
-+In the first two years, we used gender, country, year of birth, level of 
++ In the first two years, we used gender, country, year of birth, level of 
 education, and number of forum posts. We also used the set of courses that a
 single student took, since that could be used to re-identify the student.
 Care should be taken to 
@@ -42,7 +42,7 @@ obliterated.
 
 3) A file that maps countries into continents. 
 
-+A pickled dictionary of mapping is included here.
++ A pickled dictionary of mapping is included here.
 
 
 *********************
