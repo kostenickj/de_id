@@ -3,7 +3,8 @@ __author__ = 'olivia'
 import sys, pickle
 import numpy as np
 import pandas as pd
-from de_id_functions import *
+import csv
+#from de_id_functions import *
 
 """
 Bin a set of numeric values so that at least n entities are within each bin. In particular,
@@ -114,7 +115,9 @@ def createConversionDict(val,num,denom,numdenom):
     numDict = {}
     for i,v in enumerate(val):
         tm = numdenom.ix[v]
-        bucket_mean = sum(tm['count'] * tm['value']) / float(tm['count'].sum())
+        #bucket_mean = sum(tm['count'] * tm['item']) / float(tm['count'].sum())
+        #bucket_count = tm['count'].sum()
+        bucket_mean = tm['sum'].sum() / float(tm['count'].sum())
         for v2 in v:
             if len(v)==1:
                 numDict[v2] = (str(v[0]), bucket_mean)
@@ -123,15 +126,21 @@ def createConversionDict(val,num,denom,numdenom):
     return numDict
 
 def build_bins(val_l):
+    l_end = val_l.pop()
+    if l_end[0] != '':
+        val_l.append(l_end)
+        l_end = None
     d_frame = pd.DataFrame(val_l)
     d_frame.columns = ['item', 'count', 'sum']
     d_frame.index = d_frame['item']
-    val = list(d_frame['item'].values)
-    num = list(d_frame['count'].values)
-    denom = list(d_frame['sum'].values)
+    val = [[x] for x in list(d_frame['item'].values)]
+    denom = d_frame['count'].values
+    num = d_frame['sum'].values
     while sum(denom<k) > 1:
         val, num, denom = collapse(val, num, denom, YoB_binsize)
     dictobj = createConversionDict(val, num, denom, d_frame)
+    if l_end != None:
+        dictobj[''] = l_end[1]
     return dictobj
 
 def update_num_dict(val, dict):
@@ -152,15 +161,19 @@ def dict_to_list(d):
     for i in d.iterkeys():
         ret_list.append([i, d[i][0], d[i][1]])
     ret_list.sort()
+    l = ret_list.pop()
+    if l[0] == '':
+        l[2] = 0
+    ret_list.append(l)
     return ret_list
 
 def dump_map(m, f_name):
-    f_out = open(fname, 'w')
-    pickle.dump(m, f_name)
+    f_out = open(f_name, 'w')
+    pickle.dump(m, f_out)
     f_out.close()
     return
 
-def create_value_maps(cin):
+def create_value_maps(cin, fname_ps):
 
     #create the dictionaries for each of the different numeric values
     yob_d = {}
@@ -170,6 +183,7 @@ def create_value_maps(cin):
     f_threads_d = {}
     f_comments_d = {}
 
+    cin.next()
     for l in cin:
         yob_d = update_num_dict(l[6], yob_d)
         f_post_d = update_num_dict(l[8], f_post_d)
@@ -192,104 +206,26 @@ def create_value_maps(cin):
     f_threads_map = build_bins(f_threads_l)
     f_comments_map = build_bins(f_comments_l)
 
-    dump_map(yob_map, 'yob_map.pkl')
-    dump_map(f_post_map,'f_post_map.pkl')
-    dump_map(f_votes_map, 'f_votes_map.pkl')
-    dump_map(f_endorse_map, 'f_endorsed_map.pkl')
-    dump_map(f_threads_map, 'f_threads_map.pkl')
-    dump_map(f_comments_map, 'f_comments_map.pkl')
+    dump_map(yob_map, ''.join(['yob_map_', fname_ps, '.pkl']))
+    dump_map(f_post_map,''.join(['f_post_map_',fname_ps, '.pkl']))
+    dump_map(f_votes_map, ''.join(['f_votes_map_', fname_ps, '.pkl']))
+    dump_map(f_endorse_map, ''.join(['f_endorsed_map_', fname_ps, '.pkl']))
+    dump_map(f_threads_map, ''.join(['f_threads_map_', fname_ps, '.pkl']))
+    dump_map(f_comments_map, ''.join(['f_comments_map_', fname_ps, '.pkl']))
 
     return None
 
 
-def main(c, year_bin_file, post_bin_file):
-    table = 'source'
-    global qry, endpts, year_conversion, nforumposts_conversion
-    ########################################################
-    # Bin years of birth
-    c.execute("SELECT YoB, COUNT(*) as \'num\', SUM(YoB) as \'sum\' FROM " + table + " WHERE YoB > 0 GROUP BY YoB ORDER BY YoB")
-    qry = c.fetchall()
-
-    try:
-        qry = [(int(float(z[0])), int(z[1]), int(z[2])) for z in qry]  # convert string floats to ints in qry count
-    except:
-        print "Year of birth list contains invalid entry"
-        pass
-    # Process data into pandas dataframe
-    numdenom = pd.DataFrame(qry)
-    numdenom.columns = ['value', 'count', 'sum']
-    numdenom.index = numdenom['value']
-    numdenom['value'] = [int(float(x)) if x!='nan' else 9999 for x in numdenom['value']]
-    numdenom.index = list([int(float(x)) for x in numdenom.index[:len(numdenom)-1]]) + [9999]
-    numdenom = numdenom.sort_values('value')
-    # create three lists
-    val = [[x] for x in list(numdenom['value'].values)]
-    num = numdenom['sum'].values
-    denom = numdenom['count'].values
-    # Bin year of birth
-    while sum(denom<k)>1:
-        val,num,denom = collapse(val,num,denom,YoB_binsize)
-    # Create dictionary that maps every unique value to a corresponding bin, and add the empty values to it
-    dictyob = createConversionDict(val,num,denom,numdenom,year_bin_fname)
-    pickle.dump(dictyob,year_bin_file)
-
-    ########################################################
-    # Bin number of forum posts
-    # Replace all values of nforum_posts that are blank with a temporary 9999
-    c.execute("SELECT nforum_posts, COUNT(*) as \'num\', SUM(nforum_posts) as \'sum\' FROM " + table + " GROUP BY nforum_posts ORDER BY nforum_posts")
-    qry = c.fetchall()
-    try:
-        qry = [(int(z[0]), int(z[1]), int(z[2])) for z in qry]  # convert string floats to ints in qry count
-    except:
-        print "Number of forum posts includes an invalid entry"
-        pass
-    # Process data into pandas dataframe
-    numdenom = pd.DataFrame(qry)
-    numdenom.columns = ['value', 'count', 'sum']
-    numdenom.index = numdenom['value']
-    numdenom['value'] = [int(float(x)) if x!='nan' else 9999 for x in numdenom['value']]
-    numdenom.index = list([int(float(x)) for x in numdenom.index[:len(numdenom)-1]]) + [9999]
-    numdenom = numdenom.sort_values('value')
-    # create three lists
-    val = [[x] for x in list(numdenom['value'].values)]
-    num = numdenom['sum'].values
-    denom = numdenom['count'].values
-    # Bin year of birth
-    while sum(denom<k)>1:
-        val,num,denom = collapse(val,num,denom,nforum_post_binsize)
-    # Create dictionary that maps every unique value to a corresponding bin, and add the empty values to it
-    dictpost = createConversionDict(val,num,denom,numdenom,post_bin_fname)
-    pickle.dump(dictpost,post_bin_file)
-
 if __name__ == '__main__':
-    """
-    The main routine, that will take as input the database name of the
-    untouched database and output pickle files with the generalization
-    mappings of the most greedily optimal bins that optimize for
-    minimal distortion in the mean of the bin.
-    """
-    if len(sys.argv) < 4:
-        print 'Usage: python numeric_generalization_v2.py dbName yearBinFileName postBinFileName'
+    if len(sys.argv) < 3:
+        print 'Usage: python numeric_generalization_v2.py in_file bin_size'
         sys.exit(1)
 
-    dbname = sys.argv[1]
-    cur = dbOpen(dbname)
-    year_bin_fname = sys.argv[2]
-    year_bin_file = open(year_bin_fname, 'w')
-    post_bin_fname = sys.argv[3]
-    post_bin_file = open(post_bin_fname, 'w')
-    if len(sys.argv) > 4:
-        try:
-            YoB_binsize = int(sys.argv[4])
-            print 'building bins for YoB with size ', str(YoB_binsize)
-        except:
-            print'Invalid argument for Year of Birth bin size; value must be an integer'
-    if len(sys.argv) > 5:
-        try:
-            nforum_post_binsize = int(sys.argv[5])
-            print 'building bins for forum posts with size ', str(nforum_post_binsize)
-        except:
-            print 'invalid argument for forum bin size, value must be an integer'
+    fname_in = sys.argv[1]
+    fname_out = fname_in[:-4]
+    bin_size = int(sys.argv[2])
+    #YoB_binsize = bin_size
 
-    main(cur, year_bin_file, post_bin_file)
-    dbClose(cur)
+    f_in = open(fname_in, 'r')
+    c_in = csv.reader(f_in)
+    create_value_maps(c_in, fname_out)
