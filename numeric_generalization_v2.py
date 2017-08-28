@@ -1,10 +1,8 @@
 __author__ = 'olivia'
 
-import sys, pickle
+import sys, pickle, csv
 import numpy as np
 import pandas as pd
-import csv
-#from de_id_functions import *
 
 """
 Bin a set of numeric values so that at least n entities are within each bin. In particular,
@@ -13,16 +11,7 @@ and produce bins with a particular range and calculate the mean for that range. 
 improved in order to bin values together in such a way that minimizes the distortion of the mean
 of the post-binned values.
 
-The value '9999' (or '9999.0') is used as a marked value to show that there is nothing associated
-in the record. For YoB, this value is not recorded in the resulting table of intervals and
-means. For nforum posts, this value is included in the table, given an interval which includes
-the final interval for the posts, but should be treated specially when calculating suppression
-sets for anonymity and when producing the final, de-identified data file. In those cases,
-the value of '9999.0' should be caught specially and replaced with '0'.
 """
-
-YoB_binsize = 25000
-nforum_post_binsize = 25000
 
 k = 5
 
@@ -57,7 +46,7 @@ def collapse(val,num,denom,maxbinsize):
         val[index] = val[index]+val[index+1]
         del val[index+1]
         return val,num,denom
-    
+
     indices_less_than_k = np.where(denom<maxbinsize)[0]
     left_indices = indices_less_than_k-1
     # if left endpoint is in list, then don't calculate for that index
@@ -115,17 +104,26 @@ def createConversionDict(val,num,denom,numdenom):
     numDict = {}
     for i,v in enumerate(val):
         tm = numdenom.ix[v]
-        #bucket_mean = sum(tm['count'] * tm['item']) / float(tm['count'].sum())
-        #bucket_count = tm['count'].sum()
-        bucket_mean = tm['sum'].sum() / float(tm['count'].sum())
+        bucket_count = tm['count'].sum()
+        bucket_mean = tm['sum'].sum() / float(bucket_count)
         for v2 in v:
             if len(v)==1:
-                numDict[v2] = (str(v[0]), bucket_mean)
+                numDict[v2] = (str(v[0]), bucket_mean, bucket_count)
             else:
-                numDict[v2] = (str(min(v))+'-'+str(max(v)), bucket_mean)
+                numDict[v2] = (str(min(v))+'-'+str(max(v)), bucket_mean, bucket_count)
     return numDict
 
-def build_bins(val_l):
+def build_bins(val_l, bin_size):
+    '''
+    Build the range of values, starting from a particular bin size. The algorithm will first build generalization bins
+    of the indicated size, but will then use the greedy algorithm in collapse() to re-arrange the bins so that the
+    mean value deviates as little as possible form the values in the bin. This means that the bins may be larger or
+    smaller than the indicated bin size, but minimizes the statistical bias of the generalization
+    :param val_l: A list of values and counts for those values
+    :param bin_size: the size of the initial bins to create
+    :return: a generalization table in the form of a dictionary mapping from value to the range of values that will be
+    substituted for the initial value when generalization occurs
+    '''
     l_end = val_l.pop()
     if l_end[0] != '':
         val_l.append(l_end)
@@ -136,14 +134,21 @@ def build_bins(val_l):
     val = [[x] for x in list(d_frame['item'].values)]
     denom = d_frame['count'].values
     num = d_frame['sum'].values
-    while sum(denom<k) > 1:
-        val, num, denom = collapse(val, num, denom, YoB_binsize)
+    while sum(denom<bin_size) > 1:
+        val, num, denom = collapse(val, num, denom, bin_size)
     dictobj = createConversionDict(val, num, denom, d_frame)
     if l_end != None:
-        dictobj[''] = l_end[1]
+        dictobj[''] = ('', 0, l_end[1])
     return dictobj
 
 def update_num_dict(val, dict):
+    '''
+    Update an entry in a dictionary keyed by quasi-identifier values with value the number of entries with that value
+    and the total for the value (value * count). 
+    :param val: the value of the quasi-identifier
+    :param dict: the dictionary to be updated
+    :return: The dictionary updated
+    '''
     if val != '':
         i = int(val)
     else:
@@ -157,6 +162,14 @@ def update_num_dict(val, dict):
     return dict
 
 def dict_to_list(d):
+    '''
+    Convert a dictionary keyed by quasi-identifier values with entries pairs of the number of items with that value
+    and the product of the value and the count into a list of triples <value, count, count*value>. Return this list,
+    sorted by value. Note that the special value of '' will be handled with a triple of <''. count, 0>; this will 
+    be the last member of the returned list if it exists.
+    :param d: A dictionary of quasi-identifier values
+    :return: A sorted list of triples of the form <value, count, value*count>
+    '''
     ret_list = []
     for i in d.iterkeys():
         ret_list.append([i, d[i][0], d[i][1]])
@@ -168,13 +181,29 @@ def dict_to_list(d):
     return ret_list
 
 def dump_map(m, f_name):
+    '''
+    Write a pickle of a map to an output file
+    :param m: the map to be pickled
+    :param f_name: the name of the file to contain the pickled map
+    :return: None
+    '''
     f_out = open(f_name, 'w')
     pickle.dump(m, f_out)
     f_out.close()
-    return
+    return None
 
-def create_value_maps(cin, fname_ps):
-
+def create_value_maps(cin, fname_ps, bin_size):
+    '''
+    Create the generalization tables, and save them in pickled form. This function takes a .csv file of quasi-identifiers,
+    the name to use as the base of the output file, and the size of the bins to be produced. It will create a mapping
+    file for each of the numeric quasi-identifiers, grouping the numeric values so that there are at least bin_size
+    records within each bin.
+    :param cin: A .csv file to be used as input. We assume the first line is made up of header information, so it is 
+    skipped
+    :param fname_ps: The base name for the output files
+    :param bin_size: The minimum size of the bins that are to be create
+    :return: None
+    '''
     #create the dictionaries for each of the different numeric values
     yob_d = {}
     f_post_d = {}
@@ -183,7 +212,9 @@ def create_value_maps(cin, fname_ps):
     f_threads_d = {}
     f_comments_d = {}
 
+    #read the header line
     cin.next()
+    #construct the dictionaries of value, count
     for l in cin:
         yob_d = update_num_dict(l[6], yob_d)
         f_post_d = update_num_dict(l[8], f_post_d)
@@ -192,6 +223,7 @@ def create_value_maps(cin, fname_ps):
         f_threads_d = update_num_dict(l[11], f_threads_d)
         f_comments_d = update_num_dict(l[12], f_comments_d)
 
+    #convert the dictionaries to lists
     yob_l = dict_to_list(yob_d)
     f_post_l = dict_to_list(f_post_d)
     f_votes_l = dict_to_list(f_votes_d)
@@ -199,13 +231,15 @@ def create_value_maps(cin, fname_ps):
     f_threads_l = dict_to_list(f_threads_d)
     f_comments_l = dict_to_list(f_comments_d)
 
-    yob_map = build_bins(yob_l)
-    f_post_map = build_bins(f_post_l)
-    f_votes_map = build_bins(f_votes_l)
-    f_endorse_map = build_bins(f_endorse_l)
-    f_threads_map = build_bins(f_threads_l)
-    f_comments_map = build_bins(f_comments_l)
+    #build the bins from the lists
+    yob_map = build_bins(yob_l, bin_size)
+    f_post_map = build_bins(f_post_l, bin_size)
+    f_votes_map = build_bins(f_votes_l, bin_size)
+    f_endorse_map = build_bins(f_endorse_l, bin_size)
+    f_threads_map = build_bins(f_threads_l, bin_size)
+    f_comments_map = build_bins(f_comments_l, bin_size)
 
+    #save everything
     dump_map(yob_map, ''.join(['yob_map_', fname_ps, '.pkl']))
     dump_map(f_post_map,''.join(['f_post_map_',fname_ps, '.pkl']))
     dump_map(f_votes_map, ''.join(['f_votes_map_', fname_ps, '.pkl']))
@@ -223,9 +257,11 @@ if __name__ == '__main__':
 
     fname_in = sys.argv[1]
     fname_out = fname_in[:-4]
+    while '/' in fname_out:
+        cut_i = fname_out.find('/')
+        fname_out = fname_out[cut_i +1:]
     bin_size = int(sys.argv[2])
-    #YoB_binsize = bin_size
 
     f_in = open(fname_in, 'r')
     c_in = csv.reader(f_in)
-    create_value_maps(c_in, fname_out)
+    create_value_maps(c_in, fname_out, bin_size)

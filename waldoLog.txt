@@ -1,3 +1,16 @@
+5/13/17
+Changed the numeric generalization code so that it will run when sum(denom<bin_size) > 1 rather than when
+sum(denom<5) > 1. Not sure why Olivia picked 5, but this seems to work better, especially on YoB. Realizing that the
+current mechanism doesn't guarantee bin size, just starts with the indicated bin size, then does the greedy algorithm
+to make the bin contents center around a common mean.
+
+5//11/17
+Cleaning up numeric_generalization_v2.py. Added the code that will read the bin size from the command line, and pass that
+through the various functions, getting rid of the global variables that had been used. Need to find out from Olivia why
+she picked 5 as the value of k that controls when to kick out of the loop calling collapse(). Added code to record the
+count in each of the buckets. Added code to record the value for no entry ('') to be no entry with a mean of 0 and the
+count of entries with that value.
+
 4/9/17
 Starting to understand the DataFrame...it is a 2-d array, that can be initialized by a list of lists. These can be
 built from the .csv file for all of the various numerics that need to be generalized-- this couild be done in a single
