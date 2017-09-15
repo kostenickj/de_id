@@ -18,7 +18,7 @@ Created on May 28, 2014
 
 @author: waldo
 """
-import operator
+import operator, sys
 import csv
 import utils
 def buildKey(ids, dataLine):
@@ -71,11 +71,17 @@ if __name__ == '__main__':
     flexible mechanism for this but finding one that is not error prone is difficult.
 
     """
-    idFields = [0, 4, 5, 6, 8, 13] #Year 2 quasi-identifiers
+    idFields = [6,8,9,10,11,12] #quasi-identifiers subject to numeric generaliztion
     #idFields = [0, 6, 7, 8, 9, 17] #Year 1 quasi-identifiers
-    fname = utils.getFileName('data file to test')
-    kanon = utils.getIntVal('Enter value of k to test : ')
-    full = utils.getStringVal('Enter s for summary, f for full report : ', ['s', 'f'])
+    if len(sys.argv) < 4:
+        fname = utils.getFileName('data file to test')
+        kanon = utils.getIntVal('Enter value of k to test : ')
+        full = utils.getStringVal('Enter s for summary, f for full report : ', ['s', 'f'])
+    else:
+        fname = sys.argv[1]
+        kanon = int(sys.argv[2])
+        full = sys.argv[3]
+
     fin = open(fname, 'rU')
     fread = csv.reader(fin)
     
