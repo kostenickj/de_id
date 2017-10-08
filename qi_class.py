@@ -2,7 +2,7 @@ import csv, sys
 
 
 class qi_rec:
-    def __init__(self, sid, course_id, region, pcode, city,
+    def __init__(self, sid, course_id, continent, region, pcode, city, subdivision,
                  LoE, YoB, gender, forum_posts, forum_votes, forum_endorsed, forum_threads, forum_comments,
                  forum_pinned,
                  prof_country, email_domain):
@@ -27,9 +27,11 @@ class qi_rec:
         '''
         self.sid = sid
         self.course_id = course_id
+        self.continent = continent
         self.region = region
         self.pcode = pcode
         self.city = city
+        self.subdivision = subdivision
         self.LoE = LoE
         self.YoB = YoB
         self.gender = gender
@@ -77,7 +79,7 @@ class qi_rec:
         :return: A list of quasi-identifiers in the current qi_rec
         '''
         out_line = [self.sid, self.course_id,
-                    self.region, self.pcode, self.city,
+                    self.region, self.pcode, self.city, self.continent, self.subdivision,
                     self.LoE, self.YoB, self.gender,
                     self.forum_posts, self.forum_votes, self.forum_endorsed,
                     self.forum_threads, self.forum_comments,
@@ -198,8 +200,8 @@ def create_from_full_csv(cline):
     :param cline: A line from a .csv file containing all the information about a student/course pair
     :return: a qi_rec object, initialized with the non-functionally determined quasi-identifiers
     '''
-    new_qi = qi_rec(cline[1], cline[0],
-                    cline[13], cline[15], cline[12],
+    new_qi = qi_rec(cline[1], cline[0], cline[11],
+                    cline[13], cline[15], cline[12], cline[14],
                     cline[22], cline[23], cline[24],
                     cline[34], cline[35], cline[36], cline[37], cline[38], cline[39],
                     cline[51], cline[53])

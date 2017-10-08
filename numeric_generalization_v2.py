@@ -216,12 +216,12 @@ def create_value_maps(cin, fname_ps, bin_size):
     cin.next()
     #construct the dictionaries of value, count
     for l in cin:
-        yob_d = update_num_dict(l[6], yob_d)
-        f_post_d = update_num_dict(l[8], f_post_d)
-        f_votes_d = update_num_dict(l[9], f_votes_d)
-        f_endorse_d = update_num_dict(l[10], f_endorse_d)
-        f_threads_d = update_num_dict(l[11], f_threads_d)
-        f_comments_d = update_num_dict(l[12], f_comments_d)
+        yob_d = update_num_dict(l[8], yob_d)
+        f_post_d = update_num_dict(l[10], f_post_d)
+        f_votes_d = update_num_dict(l[11], f_votes_d)
+        f_endorse_d = update_num_dict(l[12], f_endorse_d)
+        f_threads_d = update_num_dict(l[13], f_threads_d)
+        f_comments_d = update_num_dict(l[14], f_comments_d)
 
     #convert the dictionaries to lists
     yob_l = dict_to_list(yob_d)
