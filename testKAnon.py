@@ -59,6 +59,18 @@ def makeDict(ids, infile):
   
     return retDict
 
+def print_csv(totals, k_level):
+    print_line = str(totals[0])
+    for i in range (1,k_level - 1):
+        print_line = ','.join([print_line, str(totals[i])])
+    print print_line
+    return None
+
+def print_text(totals, k_level):
+    for i in range(0, k_level-1):
+        print 'Number of buckets with', i+1, 'entries is', totals[i]
+    return None
+
 if __name__ == '__main__':
     """
     When run stand-alone, this script will query for a filename and a level of anonymity
@@ -71,7 +83,26 @@ if __name__ == '__main__':
     flexible mechanism for this but finding one that is not error prone is difficult.
 
     """
-    idFields = [6,8,9,10,11,12] #quasi-identifiers subject to numeric generaliztion
+    user_id = 0
+    course_id = 1
+    Location = 2
+    LoE = 3
+    YoB = 4
+    gender = 5
+    nforum_posts = 6
+    nforum_votes = 7
+    nforum_endorsed = 8
+    nforum_threads = 9
+    nforum_comments = 10
+    email_domain = 11
+
+    #idFields = [2,4,5,12]
+    #idFields = [LoE,Location] #just LOE and Location
+    #idFields = [course_id, Location, LoE, gender, email_domain] #categorical fields only
+    #idFields = [Location, LoE, gender, email_domain] #categorical fields only without course id
+    idFields = [YoB, nforum_posts, nforum_votes, nforum_endorsed, nforum_threads, nforum_comments ] #numerics only
+    #idFields = [1,2,3,4,5,6,7,8,9,10,11] #all quasi-identifiers
+    #idFields = [2,3,4,5,6,7,8,9,10,11] #all quasi-identifiers other than course id
     #idFields = [0, 6, 7, 8, 9, 17] #Year 1 quasi-identifiers
     if len(sys.argv) < 4:
         fname = utils.getFileName('data file to test')
@@ -97,8 +128,10 @@ if __name__ == '__main__':
             totals[v-1] += 1
             if full == 'f':
                 print v, k
-    for i in range(0,kanon-1):
-        print 'Number of buckets with', i+1, 'entries is', totals[i]
+    if full == 'c':
+        print_csv(totals, kanon)
+    else :
+        print_text(totals, kanon)
 
         
     
