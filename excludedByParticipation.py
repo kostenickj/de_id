@@ -6,8 +6,8 @@ suppressed to create the de-identified set.
 """
 __author__ = 'waldo'
 
-import pickle, sys, csv
-from de_id_functions import *
+import sys
+from deIdentify.Archive.de_id_functions import *
 from buildDeIdentifiedCSV import get_pickled_table
 
 

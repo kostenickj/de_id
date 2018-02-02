@@ -100,7 +100,9 @@ if __name__ == '__main__':
     #idFields = [LoE,Location] #just LOE and Location
     #idFields = [course_id, Location, LoE, gender, email_domain] #categorical fields only
     #idFields = [Location, LoE, gender, email_domain] #categorical fields only without course id
-    idFields = [YoB, nforum_posts, nforum_votes, nforum_endorsed, nforum_threads, nforum_comments ] #numerics only
+    #idFields = [course_id, Location, LoE, gender] #categorical fields without email domain
+    idFields = [YoB, nforum_posts, nforum_votes, nforum_endorsed, nforum_threads, nforum_comments,course_id, Location, LoE, gender]
+    #idFields = [YoB, nforum_posts, nforum_votes, nforum_endorsed, nforum_threads, nforum_comments ] #numerics only
     #idFields = [1,2,3,4,5,6,7,8,9,10,11] #all quasi-identifiers
     #idFields = [2,3,4,5,6,7,8,9,10,11] #all quasi-identifiers other than course id
     #idFields = [0, 6, 7, 8, 9, 17] #Year 1 quasi-identifiers

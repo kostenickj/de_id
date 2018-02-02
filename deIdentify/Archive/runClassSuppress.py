@@ -4,7 +4,7 @@ Run the courseSetDeIdentify.py for a set of k-values and both participation and 
 mechanisms.
 '''
 import courseSetDeIdentify as csD
-from de_id_functions import dbOpen, dbClose
+from deIdentify.Archive.de_id_functions import dbOpen, dbClose
 
 k_values = [3, 4, 5, 6]
 suppress_types = ['P', 'R']

@@ -2,7 +2,7 @@
 
 __author__ = 'waldo'
 
-from de_id_functions import dbOpen, dbClose
+from deIdentify.Archive.de_id_functions import dbOpen, dbClose
 import sys
 import random
 import pickle

@@ -2,8 +2,8 @@
 
 __author__ = 'waldo'
 
-import pickle, sys, csv
-from de_id_functions import *
+import pickle, sys
+from deIdentify.Archive.de_id_functions import *
 """
 The set of fields that will be obtained from the database. These will form the base for the
 fields that will be written to the output file, after being either suppressed (in which case

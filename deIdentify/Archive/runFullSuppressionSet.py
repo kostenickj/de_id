@@ -4,7 +4,7 @@ This runs the program to build the full set of records to suppress once the binn
 identification based on the classes for which a user enrolled.
 '''
 import buildFullSuppressionSet
-from de_id_functions import dbOpen
+from deIdentify.Archive.de_id_functions import dbOpen
 
 #bin_size = ['05', '10', '15', '20', '25']
 bin_size = ['00']

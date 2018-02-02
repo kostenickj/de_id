@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from de_id_functions import dbOpen
+from deIdentify.Archive.de_id_functions import dbOpen
 import sys
 
 if __name__ == '__main__':

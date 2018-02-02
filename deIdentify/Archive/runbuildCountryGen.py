@@ -8,7 +8,7 @@ countries to larger regions exists two directories above the script and is named
 '''
 
 import buildcountrygeneralizer as bcg
-from de_id_functions import dbOpen
+from deIdentify.Archive.de_id_functions import dbOpen
 
 bin_info = [('01k', 1000),
             ('02k', 2000),

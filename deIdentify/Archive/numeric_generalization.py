@@ -12,7 +12,7 @@ sets for anonymity and when producing the final, de-identified data file. In tho
 the value of '9999.0' should be caught specially and replaced with '0'.
 """
 
-from de_id_functions import *
+from deIdentify.Archive.de_id_functions import *
 import sys, pickle
 
 YoB_binsize = 25000

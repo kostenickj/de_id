@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 __author__ = 'waldo'
 
-from de_id_functions import *
-from buildDeIdentifiedCSV import build_numeric_dict, get_pickled_table, loe_dict
+from deIdentify.Archive.de_id_functions import *
+from buildDeIdentifiedCSV import get_pickled_table, loe_dict
 import sys, pickle
 
 

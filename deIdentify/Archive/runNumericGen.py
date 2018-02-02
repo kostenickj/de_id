@@ -6,8 +6,8 @@ the first member of the pairs in bin_info, and with bin sizes that are the secon
 Current values are 0 (no binning), 5k, 10k, 15, 20k, and 25k.
 '''
 
-import numeric_generalization as ng
-from de_id_functions import dbOpen
+from deIdentify.Archive import numeric_generalization as ng
+from deIdentify.Archive.de_id_functions import dbOpen
 
 bin_size = [('00k', 0),
             ('05k', 5000),

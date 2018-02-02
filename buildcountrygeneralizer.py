@@ -27,7 +27,7 @@ import pycountry
 import sys
 
 import utils
-from de_id_functions import *
+from deIdentify.Archive.de_id_functions import *
 from edLevelDistribution import builddistdict
 
 geo_binsize = 5000

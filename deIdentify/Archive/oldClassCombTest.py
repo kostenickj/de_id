@@ -2,7 +2,7 @@
 
 __author__ = 'waldo'
 
-from de_id_functions import *
+from deIdentify.Archive.de_id_functions import *
 import sys
 
 def courseDropper2(cursor, tableName, courseVar, courseName, changeVals, courseDict={}):

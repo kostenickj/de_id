@@ -2,8 +2,8 @@
 
 __author__ = 'waldo'
 
-import pickle, sys, csv
-from de_id_functions import *
+import pickle, sys
+from deIdentify.Archive.de_id_functions import *
 
 """
 The set of fields that will be written to the output file. These need to be the names as

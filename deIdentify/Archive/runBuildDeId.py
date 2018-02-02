@@ -17,7 +17,7 @@ stages of the de-identification pipeline are named in a particular way:
      the YoB binning.
 '''
 import buildDeIdentifiedCSV as csvBuilder
-from de_id_functions import dbOpen
+from deIdentify.Archive.de_id_functions import dbOpen
 
 bin_size = ['00','05', '10', '15', '20', '25']
 k_vals = [3,4,5,6]

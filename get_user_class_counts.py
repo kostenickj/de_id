@@ -4,7 +4,7 @@ Given some set of databases, count the number of distinct values in a particular
 assumed that the table is named "source"
 """
 
-from de_id_functions import dbOpen
+from deIdentify.Archive.de_id_functions import dbOpen
 import sys
 
 def count_fields(c, fname, tbl_name):
