@@ -82,9 +82,9 @@ if __name__ == '__main__':
     the number written to the output file are displayed as a check.
     '''
     if len(sys.argv) != 3:
-        print 'Usage: buildRandomSubset.py fullDataSet.csv newDataSet.csv'
+        print('Usage: buildRandomSubset.py fullDataSet.csv newDataSet.csv')
     infName = sys.argv[1]
-    inf = csv.reader(open(infName, 'rU'))
+    inf = csv.reader(open(infName, 'r'))
     outfName = sys.argv[2]
     outf = csv.writer(open(outfName, 'w'))
     
@@ -94,7 +94,7 @@ if __name__ == '__main__':
     mnlist, mncount = buildNlist('maleNames.csv')
     lnlist, lncount = buildNlist('lastNames.csv')
     
-    outf.writerow(inf.next())
+    outf.writerow(next(inf))
     numlines = 0
     totLines = 0
     for l in inf:
@@ -105,6 +105,6 @@ if __name__ == '__main__':
             l[2] = nname
             outf.writerow(l)
             numlines += 1
-    print str(numlines) + " lines written out of " + str(totLines)
+    print(str(numlines) + " lines written out of " + str(totLines))
             
     

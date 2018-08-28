@@ -4,7 +4,7 @@ import display_distributions as dd
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print 'Usage: python display_distributions.py distribution_file.csv'
+        print('Usage: python display_distributions.py distribution_file.csv')
         sys.exit()
 
     fname = sys.argv[1]

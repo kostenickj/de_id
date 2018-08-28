@@ -147,7 +147,7 @@ def build_cc_to_country(cc):
             try:
                 retDict[i] = pycountry.countries.get(alpha2 = i).name
             except Exception as err:
-                print 'Error in looking up country code ', i
+                print ('Error in looking up country code ', i)
                 retDict[i] = ''
     return retDict
 
@@ -165,13 +165,13 @@ def printtables(countrydist, gentable, gensizetable):
     :return: None
     """
     for cont, count in gensizetable.iteritems():
-        print cont, count
+        print(cont, count)
 
     for country, count in countrydist.iteritems():
-        print country, count
+        print(country, count)
 
     for country, value in gentable.iteritems():
-        print country, value
+        print(country, value)
 
 
 def main(cc_list, outname, ccfname, bin_size, print_table = False):
@@ -191,7 +191,7 @@ def main(cc_list, outname, ccfname, bin_size, print_table = False):
 
 if __name__ == '__main__':
     if len(sys.argv) < 5:
-        print 'Usage: buildcountrygeneralizer databaseFile outputFile country_to_continent_file bin_size {p}'
+        print('Usage: buildcountrygeneralizer databaseFile outputFile country_to_continent_file bin_size {p}')
         exit(1)
 
     dbname = sys.argv[1]

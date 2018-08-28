@@ -21,6 +21,8 @@ Created on May 28, 2014
 import operator, sys
 import csv
 import utils
+
+
 def buildKey(ids, dataLine):
     """
     Concatenate a set of fields together to build an overall key
@@ -35,8 +37,9 @@ def buildKey(ids, dataLine):
     retKey = ''
     for i in ids:
         retKey += dataLine[i]
-        
+
     return retKey
+
 
 def makeDict(ids, infile):
     """
@@ -56,20 +59,23 @@ def makeDict(ids, infile):
             retDict[keyAnon] += 1
         else:
             retDict[keyAnon] = 1
-  
+
     return retDict
+
 
 def print_csv(totals, k_level):
     print_line = str(totals[0])
-    for i in range (1,k_level - 1):
+    for i in range(1, k_level - 1):
         print_line = ','.join([print_line, str(totals[i])])
-    print print_line
+    print(print_line)
     return None
 
+
 def print_text(totals, k_level):
-    for i in range(0, k_level-1):
-        print 'Number of buckets with', i+1, 'entries is', totals[i]
+    for i in range(0, k_level - 1):
+        print('Number of buckets with' + str(i + 1) + ' entries is' + str(totals[i]))
     return None
+
 
 if __name__ == '__main__':
     """
@@ -96,16 +102,17 @@ if __name__ == '__main__':
     nforum_comments = 10
     email_domain = 11
 
-    #idFields = [2,4,5,12]
-    #idFields = [LoE,Location] #just LOE and Location
-    #idFields = [course_id, Location, LoE, gender, email_domain] #categorical fields only
-    #idFields = [Location, LoE, gender, email_domain] #categorical fields only without course id
-    #idFields = [course_id, Location, LoE, gender] #categorical fields without email domain
-    idFields = [YoB, nforum_posts, nforum_votes, nforum_endorsed, nforum_threads, nforum_comments,course_id, Location, LoE, gender]
-    #idFields = [YoB, nforum_posts, nforum_votes, nforum_endorsed, nforum_threads, nforum_comments ] #numerics only
-    #idFields = [1,2,3,4,5,6,7,8,9,10,11] #all quasi-identifiers
-    #idFields = [2,3,4,5,6,7,8,9,10,11] #all quasi-identifiers other than course id
-    #idFields = [0, 6, 7, 8, 9, 17] #Year 1 quasi-identifiers
+    # idFields = [2,4,5,12]
+    # idFields = [LoE,Location] #just LOE and Location
+    # idFields = [course_id, Location, LoE, gender, email_domain] #categorical fields only
+    # idFields = [Location, LoE, gender, email_domain] #categorical fields only without course id
+    # idFields = [course_id, Location, LoE, gender] #categorical fields without email domain
+    idFields = [YoB, nforum_posts, nforum_votes, nforum_endorsed, nforum_threads, nforum_comments, course_id, Location,
+                LoE, gender]
+    # idFields = [YoB, nforum_posts, nforum_votes, nforum_endorsed, nforum_threads, nforum_comments ] #numerics only
+    # idFields = [1,2,3,4,5,6,7,8,9,10,11] #all quasi-identifiers
+    # idFields = [2,3,4,5,6,7,8,9,10,11] #all quasi-identifiers other than course id
+    # idFields = [0, 6, 7, 8, 9, 17] #Year 1 quasi-identifiers
     if len(sys.argv) < 4:
         fname = utils.getFileName('data file to test')
         kanon = utils.getIntVal('Enter value of k to test : ')
@@ -117,23 +124,20 @@ if __name__ == '__main__':
 
     fin = open(fname, 'rU')
     fread = csv.reader(fin)
-    
+
     totals = []
-    for i in range(0,kanon):
+    for i in range(0, kanon):
         totals.append(0)
-        
+
     fread.next()
     anonDict = makeDict(idFields, fread)
     sortedDict = sorted(anonDict.iteritems(), key=operator.itemgetter(1))
-    for k,v in sortedDict:
+    for k, v in sortedDict:
         if v < kanon:
-            totals[v-1] += 1
+            totals[v - 1] += 1
             if full == 'f':
-                print v, k
+                print(str(v) + ' ' + str(k))
     if full == 'c':
         print_csv(totals, kanon)
-    else :
+    else:
         print_text(totals, kanon)
-
-        
-    

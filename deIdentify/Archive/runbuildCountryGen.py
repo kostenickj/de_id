@@ -7,7 +7,7 @@ Current values are 0 (no binning), 5k, 10k, 15, 20k, and 25k. The script assumes
 countries to larger regions exists two directories above the script and is named 'country_continent'
 '''
 
-import buildcountrygeneralizer as bcg
+from deIdentify.Archive import buildcountrygeneralizer as bcg
 from deIdentify.Archive.de_id_functions import dbOpen
 
 bin_info = [('01k', 1000),

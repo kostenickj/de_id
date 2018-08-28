@@ -30,7 +30,7 @@ def get_id_pickles(map_name, set_name):
     '''
     try:
         id_file = open(map_name, 'r')
-        id_m= cPickle.load(id_file)
+        id_m = cPickle.load(id_file)
         id_file.close()
     except:
         id_m = {}
@@ -43,6 +43,7 @@ def get_id_pickles(map_name, set_name):
         id_s = set()
 
     return id_m, id_s
+
 
 def write_id_pickle(id_m, id_s, m_name, s_name):
     '''
@@ -81,13 +82,14 @@ def get_random_id(real_id, real_dict, random_set):
     if real_id in real_dict:
         return real_dict[real_id]
 
-    new_id = random.randint(0,10000000)
+    new_id = random.randint(0, 10000000)
     while new_id in random_set:
         new_id = random.randint(0, 10000000)
 
     real_dict[real_id] = new_id
     random_set.add(real_id)
     return new_id
+
 
 def make_did_file(fname_in, id_dict, idset):
     '''
@@ -100,7 +102,7 @@ def make_did_file(fname_in, id_dict, idset):
     :param idset: set of random_ids that are in use
     :return:
     '''
-    print 'Beginning deidentification of file', fname_in
+    print('Beginning deidentification of file', fname_in)
     outfilename = fname_in[:-5] + 'deId' + '.json'
     inf = open(fname_in, 'r')
     outf = open(outfilename, 'w')

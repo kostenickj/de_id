@@ -178,8 +178,8 @@ if __name__ == '__main__':
     """
 
     if len(sys.argv) < 7:
-        print 'Usage: buildDeIdentifiedCSV databaseIn CSVfileOut courseSupressionFile countryGeneralizationFile ' \
-              'yobbinFile postbinFile'
+        print('Usage: buildDeIdentifiedCSV databaseIn CSVfileOut courseSupressionFile countryGeneralizationFile ' \
+              'yobbinFile postbinFile')
         sys.exit(1)
 
     db_file_name = sys.argv[1]
@@ -196,5 +196,5 @@ if __name__ == '__main__':
     main(full_list, outname, class_suppress_name, country_table_name, yobFile, postFile)
 
 
-    print 'number of records suppressed for k-anonymity =', supressed_records
-    print 'number of records supressed for encoding issues =', encoding_errors
+    print ('number of records suppressed for k-anonymity =', supressed_records)
+    print('number of records supressed for encoding issues =', encoding_errors)

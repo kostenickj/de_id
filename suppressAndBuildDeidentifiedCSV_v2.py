@@ -92,7 +92,7 @@ def create_marginal_df(supp, total, values, outname, noise = False):
     duped = duplicate_anon_violating_rows(supp)
     # Add normally-distributed noise if desired.
     if noise:
-        noise_to_add = np.random.normal(loc=0, scale=np.std(values), size=n_add)
+        noise_to_add = np.random.normal(loc=0, scale=np.std(values))
     else:
         noise_to_add = 0
     # Set the value of the numeric column to the new randomly drawn values.
@@ -220,7 +220,7 @@ if __name__ == '__main__':
     where method 1 = Marginal, 2 = Marginal Mean, 3 = Joint, 4 = Joint Mean
     """
     if len(sys.argv) < 4:
-        print 'Usage: python suppressAndBuildDeidentifiedCSV_v2.py CSVfileIn CSVfileOut method'
+        print ('Usage: python suppressAndBuildDeidentifiedCSV_v2.py CSVfileIn CSVfileOut method')
         sys.exit(1)
 
     inname = sys.argv[1]

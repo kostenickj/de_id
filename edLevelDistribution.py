@@ -70,4 +70,4 @@ if __name__ == '__main__':
     studentlist = c.fetchall()
     leveldict = builddistdict(studentlist, filteredulevel)
     for description, code in transdict.items():
-        print description, str(leveldict[code])
+        print(description, str(leveldict[code]))

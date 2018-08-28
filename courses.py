@@ -9,22 +9,22 @@ import sys
 
 # error checking on usage
 if len(sys.argv) != 2:
-    print "USAGE: courses.py INFILE\n"
+    print ("USAGE: courses.py INFILE\n")
     exit(1)
 
 if sys.argv[1][-4:] != ".csv":
-    print sys.argv[1] +  " must be a .csv file\n"
+    print (sys.argv[1] +  " must be a .csv file\n")
     exit(2)
 
 inf = open(sys.argv[1], "r")
 if not inf:
-    print "Could not open " + sys.argv[1] + "\n"
+    print ("Could not open " + sys.argv[1] + "\n")
     exit(3)
 inf.close()
 
 df = pd.read_csv(sys.argv[1])
 if "course_id" not in list(df):
-    print "Must have column named \"course_id\"\n"
+    print ("Must have column named \"course_id\"\n")
     exit(4)
 
 # strip year information (so CS50 2016 and 2015 are considered the same)

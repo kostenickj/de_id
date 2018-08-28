@@ -1,3 +1,32 @@
+8/17/18
+Returning to working on converting to Python 3, and cleaning up the codebase to move files no longer in use to the archive
+section.
+
+Note that buildcountrygeneralizer.py is way out of date, still running on the database version from the first year. It might
+make sense to build a new country generalizer that uses the fields in the main data file itself. Need to look at that
+after the conversion to python 3.
+
+7/10/18
+Beginning to do the work to move the code-base to python 3. In the process, add some missing documentation. There is a
+lot of cleanup to do. Also start adding notes on what will need to be done to switch the system over to using a
+configuration file to identify the quasi-identifiers.
+
+Note on buildcountrygeneralizer.py-- It isn't clear that this file is needed any more; the country to region information
+is kept in the basic records. If we do decide to build this, it should be a lot simpler...will skp this for now.
+
+
+
+Programs converted to Python 3:
+    build_num_gen_qi_file.py: Added some documentation, needed to change print statements and cPickle->pickle
+    buildEquivClasses.py: removed code that used the database. When we move to a config file, this will need to be changed
+        considerably, as currently the fields that are quasi-identifiers are hard coded.
+    buildRandomSubset.py: changed print statements, next statements. Other than that, this looks ok.
+    check_map.py: changed print statement, change cPickle to pickle. Turns out pickle also needs a binary file, which
+        is not the default for either reading or writing, so this needs to be changed.
+    countRecordsandUsers.py: moved to the Archive directory, since it is based on the database that we no longer use.
+    courseSetDeIdentify.py: moved to archive, as it is out of date and unused.
+    display_distributions.py: changed print to function, changed next to call.
+
 5/13/17
 Changed the numeric generalization code so that it will run when sum(denom<bin_size) > 1 rather than when
 sum(denom<5) > 1. Not sure why Olivia picked 5, but this seems to work better, especially on YoB. Realizing that the

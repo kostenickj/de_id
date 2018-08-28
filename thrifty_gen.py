@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 import copy
 
+
 # this will be the function that does all the lumping
 #   df -> the data, in a pandas dataframe
 #   columns -> a list of columns that will be generalized on
@@ -24,10 +25,11 @@ import copy
 #   k -> level of k-anonymity, default to 5
 #   outfile -> the file to write the steps to
 #   returns the generalized dataframe
-def thrifty(df, columns, k = 5, outfile = 'out.txt'):
+def thrifty(df, columns, k=5, outfile='out.txt'):
     df = copy.deepcopy(df)
     current = 0
     current_col = columns[current]
+
     def new_lump_col(x):
         acc = ""
         final = columns[-1]
@@ -43,21 +45,21 @@ def thrifty(df, columns, k = 5, outfile = 'out.txt'):
                 return str(t2)
             return str(t2) + '+'
         return s
-        
+
     # set up file
     out = open(outfile, 'w')
     out.write("GENERALIZING BASED (IN ORDER) ON:\n")
     for c in columns:
         out.write("  " + c + "\n")
     out.write("\n\nSTEPS TO GENERALIZE\n")
-    while(True):
+    while (True):
         # PRE-LUMPING
         # before starting, see if we need to go to the next column to generalize on
         if (len(df[current_col].value_counts()) < 2):
             current += 1
             current_col = columns[current]
         # create the new columns we need
-        df['lump_col'] = df.apply(lambda row: new_lump_col(row), axis = 1)
+        df['lump_col'] = df.apply(lambda row: new_lump_col(row), axis=1)
         df['freq'] = df.groupby('lump_col')['lump_col'].transform('count')
         # check if finished
         if df['freq'].min() >= k:
@@ -67,7 +69,7 @@ def thrifty(df, columns, k = 5, outfile = 'out.txt'):
             out.write("Could not finish generalizing to " + str(k) + " anonymity.\n")
             out.close()
             return False
-            
+
         # GENERALIZING
         # find the lowest
         temp = copy.deepcopy(df)
@@ -88,27 +90,28 @@ def thrifty(df, columns, k = 5, outfile = 'out.txt'):
         sz2 = row2['freq']
         out.write("Combine: " + lump1 + " with " + lump2 + ", sizes(" + str(sz1) + ", " + str(sz2) + ")\n")
         # lump them together
-        df[current_col] = df.apply(lambda row: lump(row[current_col], lump1, lump2), axis = 1)
+        df[current_col] = df.apply(lambda row: lump(row[current_col], lump1, lump2), axis=1)
     # finally, return
     out.close()
     return df
 
+
 #### Script of code
 if len(sys.argv) < 5:
-    print "Usage: python2 greedy_gen.py data_in data_out k [cols]\n"
+    print("Usage: python2 greedy_gen.py data_in data_out k [cols]\n")
     exit(1)
 
-df = pd.read_csv(argv[1])
-k = int(argv[3])
+df = pd.read_csv(sys.argv[1])
+k = int(sys.argv[3])
 if k < 1:
-    print "Please enter a valid value of k\n"
+    print("Please enter a valid value of k\n")
     exit(2)
-cols = argv[4:]
+cols = sys.argv[4:]
 df_cols = list(df)
 if not set(cols).issubset(set(df_cols)):
-    print "Please enter valid column values\n"
+    print("Please enter valid column values\n")
     exit(3)
 df2 = thrifty(df, cols, k)
-df2.to_csv(argv[2])
-print "Data generalized to " + str(k) + " in " + argv[2] + "\nStep by step process in out.txt\n"
-exit(0)   
+df2.to_csv(sys.argv[2])
+print("Data generalized to " + str(k) + " in " + sys.argv[2] + "\nStep by step process in out.txt\n")
+exit(0)

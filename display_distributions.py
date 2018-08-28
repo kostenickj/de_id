@@ -12,7 +12,7 @@ def scale_first_entry(b_values, b_labels):
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print 'Usage: python display_distributions.py distribution_file.csv'
+        print('Usage: python display_distributions.py distribution_file.csv')
         sys.exit()
 
     fname = sys.argv[1]
@@ -23,7 +23,7 @@ if __name__ == '__main__':
     g_labels = []
     x_axis_label = 'Bin range'
     y_axis_label = 'Bin Count'
-    chart_title = cin.next()[0]
+    chart_title = next(cin)[0]
     hold_title = ''
     draw_chart = False
 

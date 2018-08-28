@@ -252,7 +252,7 @@ def create_value_maps(cin, fname_ps, bin_size):
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
-        print 'Usage: python numeric_generalization_v2.py in_file bin_size'
+        print ('Usage: python numeric_generalization_v2.py in_file bin_size')
         sys.exit(1)
 
     fname_in = sys.argv[1]

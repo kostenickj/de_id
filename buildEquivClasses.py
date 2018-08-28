@@ -19,8 +19,6 @@ that have fewer than a user-supplied set of entries in them.
 """
 import csv
 import utils
-from deIdentify.Archive.de_id_functions import dbOpen
-
 
 def buildKey(ids, dataLine):
     """
@@ -55,7 +53,7 @@ def makeDict(ids, inlist):
     fieldnames = ''
     for i in ids:
         fieldnames = fieldnames + str(i) + ', '
-    print 'Using quasi-identifiers', fieldnames[:-2]
+    print ('Using quasi-identifiers', fieldnames[:-2])
 
     for line in inlist:
         if line[12] == 'NA':
@@ -81,31 +79,11 @@ def makeDictFromCSV(ids, filename):
 
     fin = open(filename, 'rU')
     fread = csv.reader(fin)
-    fread.next()
+    next(fread)
     retDict = makeDict(ids, fread)
     fin.close()
 
     return retDict
-
-def makeDictFromDB(idFields, fname):
-    '''
-    Create and return a dictionary keyed by a concatenation of fields with value the number
-    of entries containing all and only those fields from a .db file. Open the named
-    database file (assumed to be sql lite), get the contents, and then call
-    makeDict(idFields, dbList) to create the dictionary, which is returned.
-
-    :param idFields: List of indexes of the fields to be concatenated to form the dictionary key
-    :param fname:  List of entries in the database to be used to form the dictionary
-    :return: a dictionary, keyed by the concatenation of the values of the index files, with
-        values the number of items that have those values
-    '''
-
-    c = dbOpen(fname)
-    c.execute('SELECT * FROM source ORDER BY user_id')
-    fulllist = c.fetchall()
-    retDict = makeDict(idFields, fulllist)
-    return retDict
-
 
 def makeEquivDict(qidict):
     retDict = {}
@@ -129,20 +107,18 @@ if __name__ == '__main__':
     flexible mechanism for this but finding one that is not error prone is difficult.
 
     """
+    idFields = [0, 10, 11, 12, 19]
     fname = utils.getFileName('data file to test')
     if fname[-3:] == 'csv':
         anonDict = makeDictFromCSV(idFields, fname)
-    elif fname[-2: ] == 'db':
-        anonDict = makeDictFromDB(idFields, fname)
     else:
-        print 'Unknown file type; program exiting'
+        print('Unknown file type; program exiting')
         exit(1)
 
-    idFields = [0, 10, 11, 12, 19]
     qiequivDict = makeEquivDict(anonDict)
 
     sortedDict = sorted(qiequivDict.iterkeys())
     for k in sortedDict:
-        print str(k), qiequivDict[k]
+        print (str(k), qiequivDict[k])
 
 

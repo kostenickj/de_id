@@ -3,7 +3,7 @@
 Run the courseSetDeIdentify.py for a set of k-values and both participation and random suppression
 mechanisms.
 '''
-import courseSetDeIdentify as csD
+from deIdentify.Archive import courseSetDeIdentify as csD
 from deIdentify.Archive.de_id_functions import dbOpen, dbClose
 
 k_values = [3, 4, 5, 6]

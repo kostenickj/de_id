@@ -186,8 +186,8 @@ def main(full_list, outname, csuppress_file_name, cg_file_name, yobfname, binfna
                 encoding_errors += 1
                 continue
     outf.close()
-    print 'number of records suppressed for k-anonymity =', supressed_records
-    print 'number of records supressed for encoding issues =', encoding_errors
+    print('number of records suppressed for k-anonymity =', supressed_records)
+    print('number of records supressed for encoding issues =', encoding_errors)
 
 
 if __name__ == '__main__':
@@ -199,8 +199,8 @@ if __name__ == '__main__':
     Usage: buildDeIdentifiedCSV databaseIn CSVfileOut recordSupressionFile countryGeneralizationFile YoBbinfile postbinfile
     """
     if len(sys.argv) < 7:
-        print 'Usage: buildDeIdentifiedCSV databaseIn CSVfileOut recordSuppressFile countryGeneralizationFile ' \
-              'YoBbinfile postbinfile'
+        print('Usage: buildDeIdentifiedCSV databaseIn CSVfileOut recordSuppressFile countryGeneralizationFile ' \
+              'YoBbinfile postbinfile')
         sys.exit(1)
     db_file_name = sys.argv[1]
     cr = dbOpen(db_file_name)

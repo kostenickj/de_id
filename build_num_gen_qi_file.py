@@ -1,14 +1,33 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
-import cPickle, sys, csv
+import pickle, sys, csv
+'''
+Generates a .csv file using the quasi-identifier file replacing the actual value for the
+numeric quasi-identifiers with the range determined in the tables created by the numeric
+generalization mechanism used and stored in the various maps. 
+'''
+# todo When changing to a configuration file driven list of qis, will need to change this as well
 
 def get_gen_map(fname):
+    '''
+    Read in a generalization map from a pickle in the file system
+    :param fname: The name of the file containing the pickle
+    :return: the map that is read in from the file
+    '''
     fin = open(fname, 'rw')
-    gen_map = cPickle.load(fin)
+    gen_map = pickle.load(fin)
     fin.close()
     return gen_map
 
 def get_gen_val(f_map, in_val):
+    '''
+    Return the generalized value from the map. If the value read in is other than the empty
+    string, the value is cast to an integer.
+    :param f_map: The generalization map to be used
+    :param in_val: The value to be generalized; this will always come in as a string but will be
+        cast to an integer if it is non-empty
+    :return: the generalized value
+    '''
     if in_val == '':
         return f_map[''][0]
     else:
@@ -17,7 +36,7 @@ def get_gen_val(f_map, in_val):
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
-        print 'Usage: python build_num_gen_qi_file.py qi_csv_file_in qi_gen_file_out'
+        print('Usage: python build_num_gen_qi_file.py qi_csv_file_in qi_gen_file_out')
         sys.exit(1)
 
     fin_name = sys.argv[1]
@@ -36,7 +55,7 @@ if __name__ == '__main__':
     fout = open(fout_name, 'w')
     qi_gen_out = csv.writer(fout)
 
-    qi_gen_out.writerow(qi_in_l.next())
+    qi_gen_out.writerow(next(qi_in_l))
 
     for l in qi_in_l:
         l[8] = get_gen_val(yob_map, l[8])

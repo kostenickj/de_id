@@ -14,8 +14,8 @@ def count_fields(c, fname, tbl_name):
 
 if __name__ == '__main__':
     for i in range(1, len(sys.argv)):
-        print sys.argv[i]
+        print (sys.argv[i])
         c = dbOpen(sys.argv[i])
-        print 'Number of unique user ids = ', str(count_fields(c, 'user_id', 'source'))
-        print 'Number of unique user, class combinations = ', str(count_fields(c, 'user_id, course_id', 'source'))
-        print ''
+        print('Number of unique user ids = ', str(count_fields(c, 'user_id', 'source')))
+        print ('Number of unique user, class combinations = ', str(count_fields(c, 'user_id, course_id', 'source')))
+        print ('')

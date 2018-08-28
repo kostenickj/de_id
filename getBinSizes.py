@@ -1,4 +1,4 @@
-import os, cPickle, sys, csv
+import os, pickle, sys, csv
 
 def print_bin_size(bin_map):
     bin_dict = {}
@@ -9,7 +9,7 @@ def print_bin_size(bin_map):
             bin_dict[span] = bin_map[y][2]
     s_span = sorted(bin_dict.keys())
     for s in s_span:
-        print s, bin_dict[s]
+        print (s, bin_dict[s])
         bin_list.append([s, bin_dict[s]])
 
     return bin_list
@@ -55,7 +55,7 @@ def store_bin_size(bin_name, store_file, bin_list):
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print 'Usage: python getBinSizes.py outFile.csv {binfiles}'
+        print ('Usage: python getBinSizes.py outFile.csv {binfiles}')
         sys.exit(1)
     out_file_name = sys.argv[1]
 
@@ -70,8 +70,8 @@ if __name__ == '__main__':
     out_c = csv.writer(out_f)
     for f in f_list:
         if '.pkl' in f:
-            f_in = open(f, 'r')
-            bin_map = cPickle.load(f_in)
+            f_in = open(f, 'rb')
+            bin_map = pickle.load(f_in)
             s_list = build_bin_size_list(bin_map)
             #store_bin_size(shorten_name(f), out_c, s_list)
             store_bin_size(f,out_c, s_list)
