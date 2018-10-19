@@ -6,6 +6,7 @@ class qi_rec(object):
                  LoE, YoB, gender, forum_posts, forum_votes, forum_endorsed, forum_threads, forum_comments,
                  forum_pinned,
                  prof_country, email_domain):
+
         """
         Create an object that contains only the quasi-identifiers that are not functionally determinable. This will
         lead to a smaller record that can be used to build the generalization and suppression/chaffing tables
@@ -25,6 +26,7 @@ class qi_rec(object):
         :param prof_country: Self-reported country of origin
         :param email_domain: Email domain
         """
+
         self.sid = sid
         self.course_id = course_id
         self.continent = continent
@@ -44,9 +46,11 @@ class qi_rec(object):
         self.prof_country = prof_country
         self.email_domain = email_domain
 
+
     def clean_rec(self):
         self.YoB = clean_YoB(self.YoB)
         self.LoE = clean_LoE(self.LoE)
+
 
     def collapse_tails(self):
         self.forum_posts = collapse_forum_posts(self.forum_posts)
@@ -56,11 +60,13 @@ class qi_rec(object):
         self.forum_comments = collapse_forum_comments(self.forum_comments)
         self.forum_pinned = collapse_pinned_counts(self.forum_pinned)
 
+
     def collapse_rec(self):
         self.forum_posts = collapse_forum_posts(self.forum_posts)
         self.forum_comments = collapse_forum_comments(self.forum_comments)
         self.forum_endorsed = collapse_forum_endorsed(self.forum_endorsed)
         self.forum_threads = collapse_forum_threads(self.forum_threads)
+
 
     def write_csv_line(self, csv_out):
         """
@@ -71,6 +77,7 @@ class qi_rec(object):
         outline = self.extract_qi_line()
         csv_out.writerow(outline)
         return None
+
 
     def extract_qi_line(self):
         """
