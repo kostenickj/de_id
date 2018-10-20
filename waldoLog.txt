@@ -1,3 +1,12 @@
+10/19/18
+Working on numeric_generalization_v2.py. Got rid of the global assignment of k = 5; seems to have no affect on the file.
+Changed the handling of the '' value (that is, no entry), as python3 is more careful about mixing types. Rather than
+special casing in all of the code, simply turned the value to -1; this means that it sorts correctly. This also means that
+the code in build_bins can be simplified by taking out the code that special cases the '' entries.
+
+Also changed the exit condition in the build_bins loop to be when sum(denom<bin_size) is less or equal to zero. Testing
+this shows that it merges the final outlier into the last bin, which is what we want.
+
 8/17/18
 Returning to working on converting to Python 3, and cleaning up the codebase to move files no longer in use to the archive
 section.

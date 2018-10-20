@@ -13,8 +13,6 @@ of the post-binned values.
 
 """
 
-k = 5
-
 # Working for year of birth and number of forum posts
 def collapse(val,num,denom,maxbinsize):
     """
@@ -124,21 +122,16 @@ def build_bins(val_l, bin_size):
     :return: a generalization table in the form of a dictionary mapping from value to the range of values that will be
     substituted for the initial value when generalization occurs
     '''
-    l_end = val_l.pop()
-    if l_end[0] != '':
-        val_l.append(l_end)
-        l_end = None
     d_frame = pd.DataFrame(val_l)
     d_frame.columns = ['item', 'count', 'sum']
     d_frame.index = d_frame['item']
     val = [[x] for x in list(d_frame['item'].values)]
     denom = d_frame['count'].values
     num = d_frame['sum'].values
-    while sum(denom<bin_size) > 1:
+    while sum(denom<bin_size) > 0:
         val, num, denom = collapse(val, num, denom, bin_size)
     dictobj = createConversionDict(val, num, denom, d_frame)
-    if l_end != None:
-        dictobj[''] = ('', 0, l_end[1])
+
     return dictobj
 
 def update_num_dict(val, dict):
@@ -152,7 +145,7 @@ def update_num_dict(val, dict):
     if val != '':
         i = int(val)
     else:
-        i = val
+        i = -1
     if i in dict:
         dict[i][0] += 1
         dict[i][1] += i
@@ -171,11 +164,11 @@ def dict_to_list(d):
     :return: A sorted list of triples of the form <value, count, value*count>
     '''
     ret_list = []
-    for i in d.iterkeys():
-        ret_list.append([i, d[i][0], d[i][1]])
+    for i,v in d.items():
+        ret_list.append([i, v[0], v[1]])
     ret_list.sort()
     l = ret_list.pop()
-    if l[0] == '':
+    if l[0] == '-1':
         l[2] = 0
     ret_list.append(l)
     return ret_list
@@ -187,7 +180,7 @@ def dump_map(m, f_name):
     :param f_name: the name of the file to contain the pickled map
     :return: None
     '''
-    f_out = open(f_name, 'w')
+    f_out = open(f_name, 'wb')
     pickle.dump(m, f_out)
     f_out.close()
     return None
@@ -213,7 +206,7 @@ def create_value_maps(cin, fname_ps, bin_size):
     f_comments_d = {}
 
     #read the header line
-    cin.next()
+    next(cin)
     #construct the dictionaries of value, count
     for l in cin:
         yob_d = update_num_dict(l[8], yob_d)
